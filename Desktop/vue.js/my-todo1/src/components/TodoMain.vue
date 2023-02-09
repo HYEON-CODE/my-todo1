@@ -7,11 +7,11 @@
             <input type="text"/>
             <button class="btn add">Add</button>
             </div>
-            <ul v-for="item in todos" class="list" :key="item.text">
+            <ul v-for="(item, i) in todos" class="list" :key="item.text">
             <li>
-                <i class="far fa-check-square"></i>
+                <i :class="[item.state==='yet' ? `far` : `fas`, `fa-check-square`]"></i>
                 <span>
-                {{item.text}}
+                {{ item.text }}
                 <b>
                     <a href="">Edit</a>
                     <a href="">Del</a>
