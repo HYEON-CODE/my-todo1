@@ -3,12 +3,19 @@
         <header><h1>Vue Fire todo1</h1></header>
         <main>
         <div class="todos">
-            <div class="write">
-            <input type="text" 
-            ref="writeArea"
-            v-model="addItemText"
-            @keyup.enter="addItem">
-            <button class="btn add" @click="addItem">Add</button>
+            <div class="write" v-if=" writeState === 'add'"> <!-- 등록 -->
+                <input type="text" 
+                ref="writeArea"
+                v-model="addItemText"
+                @keyup.enter="addItem">
+                <button class="btn add" @click="addItem">Add</button>
+            </div>
+            <div class="write" v-else> <!-- 수정 -->
+                <input type="text" 
+                ref="writeArea"
+                v-model="editItemText"
+                @keyup.enter="editSave">
+                <button class="btn add" @click="editSave">save</button>
             </div>
             <ul v-for="(item, i) in todos" class="list" :key="item.text">
             <li>
@@ -18,8 +25,8 @@
                 <span>
                 {{ item.text }}
                 <b>
-                    <a href="">Edit</a>
-                    <a href="">Del</a>
+                    <a href="" @click.prevent="editShow(i)">Edit</a>
+                    <a href="" @click.prevent="delShow(i)">Del</a>
                 </b>
                 </span>
             </li>
@@ -32,11 +39,15 @@
 <!-- 1. 할일 목록 리스팅 -->
 <!-- 2. 할일 등록 기능 -->
 <!-- 3. 체크 기능 -->
+<!-- 4. 삭제 기능 -->
 <script>
 export default {
     data() {
         return {
             addItemText: '',
+            editItemText: '',
+            crrEditItem: '',
+            writeState: 'add',
             todos:[
             {text: '공부하기', state: 'yet'},
             {text: '운동하기', state: 'done'},
@@ -55,12 +66,24 @@ export default {
                 this.todos[i].state='done';
             }else{
                 this.todos[i].state='yet';
-        }
+            }
         },
+        editShow(i) {
+            this.crrEditItem = i; 
+            this.writeState = 'edit';
+            this.editItemText = this.todos[i].text;
+        },
+        editSave() {
+            this.todos[this.crrEditItem].text = this.editItemText
+            this.writeState = 'add';
+        },
+        delShow(i) {
+            this.todos.splice(i, 1);
+        }
     },
     mounted() {
         this.$refs.writeArea.focus()
-    }
+    },
 }
 </script>
 
