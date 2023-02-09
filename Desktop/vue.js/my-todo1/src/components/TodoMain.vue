@@ -4,12 +4,17 @@
         <main>
         <div class="todos">
             <div class="write">
-            <input type="text" v-model="addItemText">
-            <button class="btn add" @click.prevent="addItem">Add</button>
+            <input type="text" 
+            ref="writeArea"
+            v-model="addItemText"
+            @keyup.enter="addItem">
+            <button class="btn add" @click="addItem">Add</button>
             </div>
-            <ul v-for="item in todos" class="list" :key="item.text">
+            <ul v-for="(item, i) in todos" class="list" :key="item.text">
             <li>
-                <i :class="[item.state==='yet' ? `far` : `fas`, `fa-check-square`]"></i>
+                <i
+                @click="checkItem(i)"
+                :class="[item.state==='yet' ? `far` : `fas`, `fa-check-square`]"></i>
                 <span>
                 {{ item.text }}
                 <b>
@@ -25,7 +30,8 @@
 </template>
 
 <!-- 1. 할일 목록 리스팅 -->
-
+<!-- 2. 할일 등록 기능 -->
+<!-- 3. 체크 기능 -->
 <script>
 export default {
     data() {
@@ -40,8 +46,20 @@ export default {
     },
     methods: {
         addItem() {
+            if (this.addItemText==='') return;
             this.todos.push({text: this.addItemText, state: 'yet'})
+            this.addItemText ='';
+        },
+        checkItem(i) {
+            if (this.todos[i].state==='yet') {
+                this.todos[i].state='done';
+            }else{
+                this.todos[i].state='yet';
         }
+        },
+    },
+    mounted() {
+        this.$refs.writeArea.focus()
     }
 }
 </script>
